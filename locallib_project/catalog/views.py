@@ -16,10 +16,18 @@ def index(request):
     # The 'all()' is implied by default.    
     num_authors = Author.objects.count()
 
+    # Number of visits to this view, as counted in the session variable.
+    num_visits = request.session.get('num_visits', 0)
+    request.session['num_visits'] = num_visits + 1
+
     # the genres and total books
     num_lotr = Book.objects.filter(title__contains="Lord of the Rings").count()
-    num_fantasy = Genre.objects.filter(name__iexact='fantasy').count()
-    
+
+    # num fantasy books
+    num_fantasy = 0
+    for book in Book.objects.all():
+        if 'Fantasy' in book.display_genre():
+            num_fantasy += 1
     context = {
         'num_books': num_books,
         'num_instances': num_instances,
@@ -27,6 +35,7 @@ def index(request):
         'num_authors': num_authors,
         'num_lotr': num_lotr,
         'num_fantasy': num_fantasy,
+        'num_visits': num_visits
     }
 
     # Render the HTML template index.html with the data in the context variable

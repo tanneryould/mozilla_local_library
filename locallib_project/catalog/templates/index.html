@@ -15,4 +15,5 @@
     <li><strong>Copies of the Lord of the Rings:</strong> {{ num_lotr }}</li>
     <li><strong>Copies in Fantasy:</strong> {{ num_fantasy }}</li>
   </ul>
+  <p>You have visited this page {{ num_visits }}{% if num_visits == 1 %} time{% else %} times{% endif %}.</p>
 {% endblock %}
