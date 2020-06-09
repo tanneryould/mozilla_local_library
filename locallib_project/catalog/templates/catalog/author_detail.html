@@ -7,6 +7,7 @@
 		{{ author.date_of_birth }} - {{ author.date_of_death }}
 		{% endif %}
 	</p>
+	<p><a href="/catalog/author/{{author.id}}/update">Update Author</a> | <a href="/catalog/author/{{author.id}}/delete">Delete Author</a></p>
 
   <div style="margin-left:20px;margin-top:20px">
     <h4>Books</h4>
@@ -22,5 +23,6 @@
 		{% else %}
 		<p>This author hasn't published any books yet. Are they even an author?</p>
 		{% endif %}
+		
   </div>
 {% endblock %}

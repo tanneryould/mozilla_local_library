@@ -1,3 +1,4 @@
 env/**
 .vscode/**
 locallib.code-workspace
+.envrc

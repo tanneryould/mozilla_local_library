@@ -3,11 +3,16 @@
 {% block content %}
   <h1>Title: {{ book.title }}</h1>
 
+  {% if book.author %}
   <p><strong>Author:</strong> <a href="{% url 'author-detail' book.author.pk %}">{{ book.author }}</a></p>
+  {% else %}
+  <p><strong>Author:</strong> No author on record</p>
+  {% endif %}
   <p><strong>Summary:</strong> {{ book.summary }}</p>
   <p><strong>ISBN:</strong> {{ book.isbn }}</p> 
   <p><strong>Language:</strong> {{ book.language }}</p>  
-  <p><strong>Genre:</strong> {{ book.genre.all|join:", " }}</p>  
+  <p><strong>Genre:</strong> {{ book.genre.all|join:", " }}</p>
+  <p><a href="/catalog/book/{{ book.id }}/update">Update</a> | <a href="/catalog/book/{{ book.id }}/delete">Delete</a></p>
 
   <div style="margin-left:20px;margin-top:20px">
     <h4>Copies</h4>
@@ -18,7 +23,7 @@
         {{ copy.get_status_display }}
       </p>
       {% if copy.status != 'a' %}
-        <p><strong>Due to be returned:</strong> {{ copy.due_back }}</p>
+        <p><strong>Due to be returned:</strong> {{ copy.due_back }}{% if perms.catalog.can_mark_returned %}- <a href="{% url 'renew-book-librarian' copy.id %}">Renew</a>  {% endif %}</p>
       {% endif %}
       <p><strong>Imprint:</strong> {{ copy.imprint }}</p>
       <p class="text-muted"><strong>Id:</strong> {{ copy.id }}</p>
