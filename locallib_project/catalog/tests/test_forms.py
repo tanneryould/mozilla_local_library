@@ -1,25 +1,35 @@
+import datetime
+
 from django.test import TestCase
+from django.utils import timezone
 
-# Create your tests here.
+from catalog.forms import RenewBookModelForm
 
-class YourTestClass(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        print("setUpTestData: Run once to set up non-modified data for all class methods.")
-        pass
+class RenewBookModelFormTest(TestCase):
+    def test_renew_form_date_field_label(self):
+        form = RenewBookModelForm()
+        self.assertTrue(form.fields['due_back'].label == None or form.fields['due_back'].label == 'Renewal date')
 
-    def setUp(self):
-        print("setUp: Run once for every test method to setup clean data.")
-        pass
+    def test_renew_form_date_field_help_text(self):
+        form = RenewBookModelForm()
+        self.assertEqual(form.fields['due_back'].help_text, 'Enter a date between now and 4 weeks (default 3).')
 
-    def test_false_is_false(self):
-        print("Method: test_false_is_false.")
-        self.assertFalse(False)
+    def test_renew_form_date_in_past(self):
+        date = datetime.date.today() - datetime.timedelta(days=1)
+        form = RenewBookModelForm(data={'due_back': date})
+        self.assertFalse(form.is_valid())
 
-    def test_false_is_true(self):
-        print("Method: test_false_is_true.")
-        self.assertTrue(False)
+    def test_renew_form_date_too_far_in_future(self):
+        date = datetime.date.today() + datetime.timedelta(weeks=4) + datetime.timedelta(days=1)
+        form = RenewBookModelForm(data={'due_back': date})
+        self.assertFalse(form.is_valid())
 
-    def test_one_plus_one_equals_two(self):
-        print("Method: test_one_plus_one_equals_two.")
-        self.assertEqual(1 + 1, 2)
+    def test_renew_form_date_today(self):
+        date = datetime.date.today()
+        form = RenewBookModelForm(data={'due_back': date})
+        self.assertTrue(form.is_valid())
+        
+    def test_renew_form_date_max(self):
+        date = timezone.localtime() + datetime.timedelta(weeks=4)
+        form = RenewBookModelForm(data={'due_back': date})
+        self.assertTrue(form.is_valid())
